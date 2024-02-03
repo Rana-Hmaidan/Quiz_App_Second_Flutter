@@ -120,7 +120,7 @@ class _QuizPageState extends State<QuizPage> {
                                 backgroundColor: Colors.transparent,
                                 content: AwesomeSnackbarContent(
                                   title:'Warning!',
-                                  message:' Please, Choose the anwer!',
+                                  message:' Please, Choose the Answer!',
                                   contentType: ContentType.warning,
                                 ),
                               );
