@@ -21,17 +21,14 @@ class _QuizPageState extends State<QuizPage> {
   bool isFinished = false;
   int score = 0;
   String? selectedAnswer;
-  int? yourChoiceIndex;
 
   @override
   Widget build(BuildContext context) {
 
-    final question = questionsWithAnswers[questionIndex];
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: !isFinished
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +73,7 @@ class _QuizPageState extends State<QuizPage> {
                         )
                       ],
                     ),
-                    const SizedBox(height: 9.0),
+                    const SizedBox(height: 10.0),
                     StepProgressIndicator(
                       size:2,
                       currentStep: questionIndex+1,
@@ -86,7 +83,6 @@ class _QuizPageState extends State<QuizPage> {
                     ),
                    ],
                    ),
-                   for(int i = 0; i< question.answers.length; i++)
                     Column(
                       children: questionsWithAnswers[questionIndex]
                           .answers
@@ -96,7 +92,6 @@ class _QuizPageState extends State<QuizPage> {
                                 onTap: () {
                                   setState(() {
                                     selectedAnswer = answer.text;
-                                    yourChoiceIndex = i;
                                   });
                                 },
                               ))
@@ -106,20 +101,18 @@ class _QuizPageState extends State<QuizPage> {
                     MainButton(
                       text: 'Next',
                       onTap: () {
-                        if(yourChoiceIndex != null ){
-                         setState(() {
-                          if (questionIndex < questionsWithAnswers.length - 1 && yourChoiceIndex != null) {
+                        setState(() {
+                        if(selectedAnswer != null){
+                          final questionObj = questionsWithAnswers[questionIndex];
+                          if (selectedAnswer == questionObj.correctAnswer) {
+                            score++;
+                          }
+                          if (questionIndex < questionsWithAnswers.length - 1 && selectedAnswer != null) {
                             questionIndex++;
                           } else {
                             isFinished = true;
                           }
-                          final questionObj = questionsWithAnswers[questionIndex];
-                          if (selectedAnswer == questionObj.correctAnswer) {
-                            score++;
-                            yourChoiceIndex = null;
-                          }
-                          
-                        });
+                          selectedAnswer = null;
                         }else{
                           final snackbar = SnackBar(
                                 elevation: 0,
@@ -131,8 +124,9 @@ class _QuizPageState extends State<QuizPage> {
                                   contentType: ContentType.warning,
                                 ),
                               );
-                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                        }
+                            ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                          }
+                        });
                       },
                     ),
                   ],
@@ -144,7 +138,7 @@ class _QuizPageState extends State<QuizPage> {
                       questionIndex = 0;
                       isFinished = false;
                       score = 0;
-                      yourChoiceIndex = null;
+                      selectedAnswer = null;
                     });
                   },
                   onTapHome: (){
